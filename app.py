@@ -1,6 +1,6 @@
 from flask import Flask, request, render_template, jsonify
 from chatbot_logic import filter_properties
-
+from flask_cors import CORS
 app = Flask(__name__)
 
 @app.route("/")
