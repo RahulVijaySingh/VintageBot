@@ -1,0 +1,362 @@
+<!-- <!DOCTYPE html>
+<html>
+  <head>
+    <title>Real Estate Chatbot</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f0f0f0;
+        margin: 0;
+        padding: 0;
+      }
+
+      #chatbox {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        width: 400px;
+        height: calc(100vh - 80px); /* leave space for input */
+        margin: auto;
+        margin-bottom: 80px; /* space for fixed input box */
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+      }
+
+      #messages {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .message {
+        margin: 8px 0;
+        line-height: 1.4;
+      }
+
+      .bot {
+        color: blue;
+      }
+
+      .user {
+        color: green;
+        align-self: flex-end;
+        text-align: right;
+      }
+
+      #chat-input {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: white;
+        padding: 10px;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        border-top: 1px solid #ccc;
+        box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.05);
+      }
+
+      #input {
+        width: 300px;
+        padding: 8px;
+        font-size: 16px;
+      }
+
+      button {
+        padding: 8px 16px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="chatbox">
+      <div id="messages"></div>
+    </div>
+
+    <div id="chat-input">
+      <input type="text" id="input" placeholder="Type here..." />
+      <button onclick="handleSend()">Send</button>
+    </div>
+
+    <script>
+      let session = {};
+
+      async function sendMessage(message = "") {
+        if (!message && Object.keys(session).length > 0) return;
+
+        if (message) appendMessage("user", message);
+
+        const res = await fetch("/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message, session }),
+        });
+
+        const data = await res.json();
+        session = data.session;
+        appendMessage("bot", data.response);
+      }
+
+      function appendMessage(role, text) {
+        const div = document.createElement("div");
+        div.className = "message " + role;
+        div.innerHTML =
+          (role === "bot" ? "🤖" : "🧑") +
+          " <pre style='margin:0; white-space:pre-wrap;'>" +
+          text +
+          "</pre>";
+        document.getElementById("messages").appendChild(div);
+
+        // Auto-scroll to bottom
+        const chatbox = document.getElementById("chatbox");
+        chatbox.scrollTop = chatbox.scrollHeight;
+      }
+
+      function handleSend() {
+        const input = document.getElementById("input");
+        const msg = input.value.trim();
+        if (!msg) return;
+        input.value = "";
+        sendMessage(msg);
+      }
+
+      document
+        .getElementById("input")
+        .addEventListener("keypress", function (e) {
+          if (e.key === "Enter") handleSend();
+        });
+
+      // Trigger initial bot message on load
+      window.onload = () => sendMessage();
+    </script>
+  </body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Real Estate Chatbot</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        background: #f0f0f0;
+        overflow: hidden;
+      }
+
+      /* Background video */
+      #background-video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: -1;
+      }
+
+      /* Chatbox Styling */
+      #chatbox {
+        background: rgba(41, 27, 27, 0.9);
+        padding: 20px;
+        border-radius: 10px;
+        width: 400px;
+        height: calc(100vh - 100px);
+        margin: auto;
+        margin-top: 50px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      }
+
+      #messages {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .message {
+        margin: 8px 0;
+        line-height: 1.4;
+        font-size: 16px;
+      }
+
+      .bot {
+        color: #0077cc;
+      }
+
+      .user {
+        color: #00cc66;
+        align-self: flex-end;
+        text-align: right;
+      }
+
+      #chat-input {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 10px;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        border-top: 1px solid #ccc;
+        box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.05);
+      }
+
+      #input {
+        width: 300px;
+        padding: 8px;
+        font-size: 16px;
+        border-radius: 5px;
+      }
+
+      button {
+        padding: 8px 16px;
+        font-size: 16px;
+        background-color: #0077cc;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+
+      button:hover {
+        background-color: #005fa3;
+      }
+
+      /* Chat bubble animations */
+      .message {
+        animation: fadeIn 0.5s ease-in-out;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      /* Add some space for the input field */
+      #input:focus {
+        outline: none;
+        border: 2px solid #0077cc;
+      }
+
+      /* Styling for GIFs and media */
+      .gif {
+        width: 50px;
+        height: 50px;
+        animation: bounce 1s infinite alternate;
+      }
+
+      @keyframes bounce {
+        from {
+          transform: translateY(0);
+        }
+        to {
+          transform: translateY(-10px);
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Background Video -->
+    <!-- <video id="background-video" autoplay muted loop>
+      <source
+        src="https://www.w3schools.com/html/mov_bbb.mp4"
+        type="video/mp4"
+      />
+      Your browser does not support the video tag.
+    </video> -->
+    <video id="background-video" autoplay muted loop>
+      <source src="../static/backg.mp4" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+
+    <!-- Chatbox -->
+    <div id="chatbox">
+      <div id="messages"></div>
+    </div>
+
+    <!-- Chat Input -->
+    <div id="chat-input">
+      <input type="text" id="input" placeholder="Type here..." />
+      <button onclick="handleSend()">Send</button>
+    </div>
+
+    <script>
+      let session = {};
+
+      async function sendMessage(message = "") {
+        if (!message && Object.keys(session).length > 0) return;
+
+        if (message) appendMessage("user", message);
+
+        const res = await fetch("/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message, session }),
+        });
+
+        const data = await res.json();
+        session = data.session;
+        appendMessage("bot", data.response);
+      }
+
+      function appendMessage(role, text) {
+        const div = document.createElement("div");
+        div.className = "message " + role;
+        div.innerHTML =
+          (role === "bot" ? "🤖" : "🧑") +
+          " <pre style='margin:0; white-space:pre-wrap;'>" +
+          text +
+          "</pre>";
+
+        // Optional: Add a GIF to the bot's messages
+        if (role === "bot") {
+          const gif = document.createElement("img");
+          gif.src =
+            "https://media.giphy.com/media/3o6Zt7FF4zV7epDWUk/giphy.gif"; // Example gif
+          gif.className = "gif";
+          div.appendChild(gif);
+        }
+
+        document.getElementById("messages").appendChild(div);
+
+        // Auto-scroll to bottom
+        const chatbox = document.getElementById("chatbox");
+        chatbox.scrollTop = chatbox.scrollHeight;
+      }
+
+      function handleSend() {
+        const input = document.getElementById("input");
+        const msg = input.value.trim();
+        if (!msg) return;
+        input.value = "";
+        sendMessage(msg);
+      }
+
+      document
+        .getElementById("input")
+        .addEventListener("keypress", function (e) {
+          if (e.key === "Enter") handleSend();
+        });
+
+      // Trigger initial bot message on load
+      window.onload = () => sendMessage();
+    </script>
+  </body>
+</html>
