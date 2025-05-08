@@ -10,7 +10,7 @@ def index():
 @app.route("/chat", methods=["POST"])
 def chat():
     user_input = request.json.get("message", "").lower()
-    session = request.json.get("session", {})
+    session = request.json.get("session", {})   
 
     step = session.get("step", 0)
     context = session.get("context", {})
@@ -30,7 +30,7 @@ def chat():
 
     elif step == 2:
         context["location"] = user_input
-        response = "💰 What's your budget range? (e.g., 1-3 Cr)"
+        response = "💰 What's your budget range? "
         session["step"] = 3
 
     
