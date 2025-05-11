@@ -42,11 +42,19 @@ def chat():
             budget=context.get("budget")
         )
         if properties:
-            listings = "\n\n".join(
-                [f"{i+1}. 🏡 {p['Title']}\n📌 {p['Type & Location']}\n💰 {p['Price']}\n🧑 {p['Seller']}"
-                for i, p in enumerate(properties)]
-            )
-            response = f"Here are some matching properties:\n\n{listings}\n\n🙏 Thank you! Would you like to restart the search? (yes/no)"
+            # listings = "\n\n".join(
+            #     [f"{i+1}. 🏡 {p['Title']}\n📌 {p['Type & Location']}\n💰 {p['Price']}\n🧑 {p['Seller']}"
+            #     for i, p in enumerate(properties)]
+            # )
+
+            listings = "<br><br>".join(
+    [f"{i+1}. 🏡 {p['Title']}<br>📌 {p['Type & Location']}<br>💰 {p['Price']}<br>🧑 {p['Seller']}"
+     for i, p in enumerate(properties)]
+)
+
+            # response = f"Here are some matching properties:\n\n{listings}\n\n🙏 Thank you! Would you like to restart the search? (yes/no)"
+            response = f"Here are some matching properties:<br><br>{listings}<br><br>🙏 Thank you! Would you like to restart the search? (yes/no)"
+
         else:
             response = "😔 Sorry, no properties found matching your preferences.\n\n🙏 Would you like to restart the search? (yes/no)"
 
